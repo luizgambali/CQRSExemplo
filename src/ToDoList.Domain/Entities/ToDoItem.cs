@@ -86,7 +86,9 @@ namespace ToDoList.Domain.Entities
                 AddNotification(new Notification("DeadLine", "Data de vencimento não pode ser vazia"));
 
             if (DeadLine <= DateTime.Now && Status != eStatus.Completed) 
-                AddNotification(new Notification("DeadLine", "Tarefas com data de vencimento anteriore a data atual devem estar com o status de concluída"));            
+                AddNotification(new Notification("DeadLine", "Tarefas com data de vencimento anteriore a data atual devem estar com o status de concluída"));  
+
+            
         }
 
         public bool IsValid()
@@ -104,6 +106,11 @@ namespace ToDoList.Domain.Entities
                    objToDoItem.DeadLine == DeadLine &&
                    objToDoItem.Type == Type &&
                    objToDoItem.Status == Status;
+        }
+
+        public override int GetHashCode()
+        {
+            return (GetType().GetHashCode() * 113) + Id.GetHashCode();
         }
     }
 }
