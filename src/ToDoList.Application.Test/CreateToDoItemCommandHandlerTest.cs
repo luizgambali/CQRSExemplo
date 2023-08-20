@@ -18,6 +18,45 @@ namespace ToDoList.Application.Test
             _handler = new CreateToDoItemCommandHandler(_repositoryMock.Object);
         }
 
+
+        [Fact]
+        public async void CreateToDoItem_When_InvalidStatus_Returns_Fail()
+        {
+            _repositoryMock.Setup(x => x.Add(It.IsAny<ToDoItem>()));
+
+            var command = new CreateToDoItemCommand
+            {
+                Title = "Test",
+                Detail = "Test",
+                DeadLine = DateTime.Now.AddDays(20),
+                Type = (int) eType.Normal,
+                Status = 55
+            };
+
+            var result = await _handler.Handle(command, CancellationToken.None);
+            
+            Assert.Equal(eStatusCode.BadRequest, result.StatusCode);
+        }
+
+        [Fact]
+        public async void CreateToDoItem_When_InvalidType_Returns_Fail()
+        {
+            _repositoryMock.Setup(x => x.Add(It.IsAny<ToDoItem>()));
+
+            var command = new CreateToDoItemCommand
+            {
+                Title = "Test",
+                Detail = "Test",
+                DeadLine = DateTime.Now.AddDays(20),
+                Type = 55,
+                Status = (int) eStatus.NotStarted
+            };
+
+            var result = await _handler.Handle(command, CancellationToken.None);
+            
+            Assert.Equal(eStatusCode.BadRequest, result.StatusCode);
+        }
+
         [Fact]
         public async void CreateToDoItem_When_CommandIsValid_Returns_Success()
         {

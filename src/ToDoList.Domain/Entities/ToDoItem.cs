@@ -34,42 +34,30 @@ namespace ToDoList.Domain.Entities
             DeadLine = deadLine;
             Type = type;
             Status = status;
-
-            Validate();
         }
 
         public void SetTitle(string title)
         {
             Title = title;
-
-            Validate();
         }
 
         public void SetDetail(string detail)
         {
             Detail = detail;
-
-            Validate();
         }
 
         public void SetDeadLine(DateTime deadLine)
         {
             DeadLine = deadLine;
-
-            Validate();
         }
         public void SetType(eType type)
         {
             Type = type;
-
-            Validate();
         }
 
         public void SetStatus(eStatus status)
         {
             Status = status;
-
-            Validate();
         }
         
         private void Validate()
@@ -85,14 +73,20 @@ namespace ToDoList.Domain.Entities
             if (DeadLine == DateTime.MinValue) 
                 AddNotification(new Notification("DeadLine", "Data de vencimento não pode ser vazia"));
 
+            if (!StatusValidation.Validate((int) Status))
+                AddNotification(new Notification("Status", "Status inválido"));  
+
+            if (!TypeValidation.Validate((int) Type))
+                AddNotification(new Notification("Type", "Tipo inválido"));  
+
             if (DeadLine <= DateTime.Now && Status != eStatus.Completed) 
                 AddNotification(new Notification("DeadLine", "Tarefas com data de vencimento anteriore a data atual devem estar com o status de concluída"));  
-
-            
         }
 
         public bool IsValid()
         {
+            Validate();
+
             return Notifications.Count == 0;
         }
 

@@ -42,6 +42,44 @@ namespace ToDoList.Application.Test
         }
 
         [Fact]
+        public async void UpdateToDoItem_When_InvalidStatus_Returns_Fail()
+        {
+            _repositoryMock.Setup(x => x.Add(It.IsAny<ToDoItem>()));
+
+            var command = new UpdateToDoItemCommand
+            {
+                Title = "Test",
+                Detail = "Test",
+                DeadLine = DateTime.Now.AddDays(20),
+                Type = (int) eType.Normal,
+                Status = 55
+            };
+
+            var result = await _handler.Handle(command, CancellationToken.None);
+            
+            Assert.Equal(eStatusCode.BadRequest, result.StatusCode);
+        }
+
+        [Fact]
+        public async void UpdateToDoItem_When_InvalidType_Returns_Fail()
+        {
+            _repositoryMock.Setup(x => x.Add(It.IsAny<ToDoItem>()));
+
+            var command = new UpdateToDoItemCommand
+            {
+                Title = "Test",
+                Detail = "Test",
+                DeadLine = DateTime.Now.AddDays(20),
+                Type = 55,
+                Status = (int) eStatus.NotStarted
+            };
+
+            var result = await _handler.Handle(command, CancellationToken.None);
+            
+            Assert.Equal(eStatusCode.BadRequest, result.StatusCode);
+        }
+
+        [Fact]
         public async void UpdateToDoItem_When_TitleIsNullOrEmpty_Returns_Fail()
         {           
             _repositoryMock.Setup(x => x.GetByIDAsync(Guid.Parse("2880e168-d50a-4a77-82f4-06fd8bb3e4f4"))).ReturnsAsync(_toDoItem);
